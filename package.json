@@ -1,0 +1,43 @@
+{
+  "name": "bytecloud-test-task",
+  "version": "1.0.0",
+  "description": "Test task for Node.js Full stack, Backend Developer",
+  "repository": {
+    "type": "git",
+    "url": "bytecloud-test-task"
+  },
+  "keywords": [
+    "node.js",
+    "mongodb",
+    "express.js",
+    "vue.js"
+  ],
+  "author": "Alex Trukhin",
+  "license": "ISC",
+  "private": true,
+  "scripts": {
+    "server": "node ./server/index.js",
+    "dev": "vite --host",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "compression": "^1.7.4",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "hopcroft-karp": "^0.0.2",
+    "lodash": "^4.17.21",
+    "mongoose": "^7.3.4",
+    "vite-svg-loader": "^4.0.0",
+    "vue": "^3.3.4",
+    "vue-router": "^4.2.4",
+    "vue3-async-computed": "^3.0.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^4.2.3",
+    "eslint": "^8.45.0",
+    "eslint-plugin-vue": "^9.15.1",
+    "vite": "^4.4.4"
+  },
+  "type": "module"
+}
