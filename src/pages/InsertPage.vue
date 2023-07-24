@@ -53,6 +53,9 @@ async function sendData(submitEvent) {
     insertResponse.doctors = json.doctors;
     insertResponse.appointments = json.appointments;
     modalInsertShow.value = true;
+    submitEvent.target.elements["patients"].value = "";
+    submitEvent.target.elements["doctors"].value = "";
+    submitEvent.target.elements["appointments"].value = "";
   } else
     alert("Failed to send data");
 }
@@ -91,8 +94,8 @@ async function resetData() {
     <div class="modal-response__content" id="modal-insert-response__content" @click.stop="">
       <span>Insert response:</span>
       <p v-if="insertResponse.patients.success.length > 0">Successful patients: {{
-        insertResponse.patients.success.length
-      }}</p>
+              insertResponse.patients.success.length
+              }}</p>
       <span v-for="el in insertResponse.patients.success">
         {{ el }}
       </span>
@@ -102,39 +105,39 @@ async function resetData() {
         {{ el }}
       </span>
       <p v-if="insertResponse.appointments.success.length > 0">Successful appointments: {{
-        insertResponse.appointments.success.length }}
+              insertResponse.appointments.success.length }}
       </p>
       <span v-for="el in insertResponse.appointments.success">
         {{ el }}
       </span>
       <p v-if="insertResponse.patients.wrongFormat.length > 0">Wrong format patients: {{
-        insertResponse.patients.wrongFormat.length }}</p>
+              insertResponse.patients.wrongFormat.length }}</p>
       <span v-for="el in insertResponse.patients.wrongFormat">
         {{ el }}
       </span>
       <p v-if="insertResponse.doctors.wrongFormat.length > 0">Wrong format doctors: {{
-        insertResponse.doctors.wrongFormat.length
-      }}</p>
+              insertResponse.doctors.wrongFormat.length
+              }}</p>
       <span v-for="el in insertResponse.doctors.wrongFormat">
         {{ el }}
       </span>
       <p v-if="insertResponse.appointments.wrongFormat.length > 0">Wrong format appointments: {{
-        insertResponse.appointments.wrongFormat.length }}</p>
+              insertResponse.appointments.wrongFormat.length }}</p>
       <span v-for="el in insertResponse.appointments.wrongFormat">
         {{ el }}
       </span>
       <p v-if="insertResponse.patients.duplicates.length > 0">Duplicates patients: {{
-        insertResponse.patients.duplicates.length }}</p>
+              insertResponse.patients.duplicates.length }}</p>
       <span v-for="el in insertResponse.patients.duplicates">
         {{ el }}
       </span>
       <p v-if="insertResponse.doctors.duplicates.length > 0">Duplicates doctors: {{
-        insertResponse.doctors.duplicates.length }}</p>
+              insertResponse.doctors.duplicates.length }}</p>
       <span v-for="el in insertResponse.doctors.duplicates">
         {{ el }}
       </span>
       <p v-if="insertResponse.appointments.duplicates.length > 0">Duplicates appointments: {{
-        insertResponse.appointments.duplicates.length }}</p>
+              insertResponse.appointments.duplicates.length }}</p>
       <span v-for="el in insertResponse.appointments.duplicates">
         {{ el }}
       </span>

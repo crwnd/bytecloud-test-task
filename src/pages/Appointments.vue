@@ -28,6 +28,17 @@ async function sync() {
         if (lists.inited === "0" || lists.lastUpdate !== json.lastUpdate) {
             lists.actual = json.actual;
             lists.suggested = json.suggested;
+            lists.suggested.sort(function (a, b) {
+                if (a.patient === b.patient) {
+                    if (a.doctor === b.doctor) {
+                        return (a.hour < b.hour) ? -1 : (a.hour > b.hour) ? 1 : 0;
+                    } else {
+                        return (a.doctor < b.doctor) ? -1 : 1;
+                    }
+                } else {
+                    return (a.patient < b.patient) ? -1 : 1;
+                }
+            });
             lists.doctors = json.doctors;
             lists.patients = json.patients;
             lists.lastUpdate = json.lastUpdate;
@@ -35,6 +46,17 @@ async function sync() {
         }
     } else
         alert("Failed to get data");
+}
+async function applyChanges() {
+    let json = await (
+        await fetch("https://api.crwnd.dev/test-task-api/apply-suggested-changes", {
+            method: "POST",
+        })
+    ).json();
+    if (json.ok === true) {
+        await sync();
+    } else
+        alert("Failed to apply data");
 }
 let intervalID = -1;
 onMounted(async () => {
@@ -56,26 +78,26 @@ onUnmounted(async () => {
         </div>
         <div id="main-page-content__actions">
             <RouterLink to="/"><button type="submit">Insert page</button></RouterLink>
-            <button>Apply</button>
+            <button @click="applyChanges">Apply</button>
         </div>
     </div>
     <div class="modal-response" id="modal-delete-response" v-if="activeCard !== undefined" @click="activeCard = undefined">
         <div class="modal-response__content" id="modal-delete-response__content" @click.stop="">
             <span>Card:</span>
             <p>Patient: {{
-                lists.patients.find(patient => patient.id === lists.suggested[activeCard].patient).id +
-                (lists.patients.find(patient => patient.id === lists.suggested[activeCard].patient).name ?
-                    ", " + lists.patients.find(patient => patient.id === lists.suggested[activeCard].patient).name : "") +
-                (lists.patients.find(patient => patient.id === lists.suggested[activeCard].patient).dob ?
-                    ", " + lists.patients.find(patient => patient.id === lists.suggested[activeCard].patient).dob : "")
-            }}</p>
+                            lists.patients.find(patient => patient.id === lists.suggested[activeCard].patient).id +
+                            (lists.patients.find(patient => patient.id === lists.suggested[activeCard].patient).name ?
+                            ", " + lists.patients.find(patient => patient.id === lists.suggested[activeCard].patient).name : "") +
+                            (lists.patients.find(patient => patient.id === lists.suggested[activeCard].patient).dob ?
+                            ", " + lists.patients.find(patient => patient.id === lists.suggested[activeCard].patient).dob : "")
+                            }}</p>
             <p>Doctor: {{
-                lists.doctors.find(doctor => doctor.id === lists.suggested[activeCard].doctor).id +
-                (lists.doctors.find(doctor => doctor.id === lists.suggested[activeCard].doctor).name ?
-                    ", " + lists.doctors.find(doctor => doctor.id === lists.suggested[activeCard].doctor).name : "") +
-                (lists.doctors.find(doctor => doctor.id === lists.suggested[activeCard].doctor).dob ?
-                    ", " + lists.doctors.find(doctor => doctor.id === lists.suggested[activeCard].doctor).dob : "")
-            }}</p>
+                            lists.doctors.find(doctor => doctor.id === lists.suggested[activeCard].doctor).id +
+                            (lists.doctors.find(doctor => doctor.id === lists.suggested[activeCard].doctor).name ?
+                            ", " + lists.doctors.find(doctor => doctor.id === lists.suggested[activeCard].doctor).name : "") +
+                            (lists.doctors.find(doctor => doctor.id === lists.suggested[activeCard].doctor).dob ?
+                            ", " + lists.doctors.find(doctor => doctor.id === lists.suggested[activeCard].doctor).dob : "")
+                            }}</p>
             <p>Appointment: {{ lists.suggested[activeCard].hour || "hour not set" }}</p>
         </div>
     </div>
