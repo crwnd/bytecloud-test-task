@@ -101,11 +101,13 @@ function isJson(str) {
 
 app.post('/submit-data', async (req, res) => {
     try {
+        console.info("/submit-data requested");
         if (!req.body.patients || !req.body.doctors || !req.body.appointments)
             return res.json({ ok: false, error: "not enough params" });
 
         let patients = [];
         if (isJson(req.body.patients)) {
+            console.info("req.body.patients is json");
             patients = JSON.parse(req.body.patients).filter(el => el !== undefined).map(el => {
                 if (el === "") return;
                 let data = el.split(", ");
@@ -262,7 +264,8 @@ function optimizeAppointments(actual, doctors, patients) {
     suggested = lodash.cloneDeep(actual);
 
     let changesMade = true;
-    while (changesMade) {
+    let iter = 0;
+    while (changesMade && iter++ <= 1000) {
         changesMade = false;
         for (let i = 0; i < suggested.length; i++) {
             // console.log("i", i);
@@ -300,6 +303,7 @@ function optimizeAppointments(actual, doctors, patients) {
 }
 
 app.post('/get-data', async (req, res) => {
+    console.info("/get-data requested");
     let response = {
         ok: false,
         patients: [],
@@ -309,15 +313,18 @@ app.post('/get-data', async (req, res) => {
         lastUpdate: lastUpdate
     };
     try {
-
         if (parseInt(req.body.last_update) === lastUpdate && req.body.inited === "1") {
             console.log("update skipped");
+            response.ok = true;
             return res.json(response);
         }
 
         response.patients = await Patients.find({}, ["-_id", "-__v"]);
         response.doctors = await Doctors.find({}, ["-_id", "-__v"]);
         let appointments = await Appointments.find({});
+        console.info("patients: ", response.patients);
+        console.info("doctors: ", response.doctors);
+        console.info("appointments: ", appointments);
         appointments.forEach(appointment => {
             // console.log("appointment", appointment);
             const patient = response.patients.find(el => el.id === appointment.patient);
@@ -336,7 +343,12 @@ app.post('/get-data', async (req, res) => {
             response.actual.push({ status: status || "green", patient: appointment.patient, doctor: appointment.doctor, hour: appointment.hour });
         });
 
+        console.time("optimizeAppointments");
+
         response.suggested = optimizeAppointments(response.actual, response.doctors, response.patients);
+
+
+        console.timeEnd("optimizeAppointments");
 
         // console.log("response", response);
         response.ok = true;
